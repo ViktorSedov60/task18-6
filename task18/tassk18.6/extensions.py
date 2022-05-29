@@ -15,12 +15,12 @@ class CryptoConverter :
                 f'Нельзя перевести одинаковые валюты {base}.')
 
         try:
-            quote_ticker = keys[quote]
+            froms = keys[quote]
         except KeyError:
             raise ConvertionException(f'Не смог обработать валюту {quote}')
 
         try:
-            base_ticker = keys[base]
+            to = keys[base]
         except KeyError:
             raise ConvertionException(f'Не смог обработать валюту {base}')
 
@@ -29,9 +29,14 @@ class CryptoConverter :
         except ValueError:
             raise ConvertionException(f'Не смог обработать количество {amount}')
 
-        r = requests.get(f'https://api.coingate.com/v2/rates/merchant/{base_ticker}/{quote_ticker}')
+        url = f"https://api.apilayer.com/currency_data/convert?to={to}&from={froms}&amount={amount}"
 
-        total_base = float(r.text) * amount
+        headers = {
+            "apikey": "TdEV3LF2HSDBO7kuZ97ypdZd1B2YwSLO"
+        }
 
+        r = requests.get(url=url, headers=headers)
+
+        total_base = json.loads(r.content)["result"]
 
         return total_base
