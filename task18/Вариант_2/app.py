@@ -47,29 +47,28 @@ def admin_window(message):
 # обработка выбранных кнопок
 @bot.callback_query_handler(func=lambda call: True)
 def handle_query(call):
-    global base, ruBase, quote, ruQuote
+    global base, ru_base, quote, ru_quote
 
     if (call.data.startswith("['value'")):
-        print(f"call.data : {call.data} , type : {type(call.data)}")
+        # print(f"call.data : {call.data} , type : {type(call.data)}")
 
         base = ast.literal_eval(call.data)[1]
-        ruBase = ast.literal_eval(call.data)[2]
+        ru_base = ast.literal_eval(call.data)[2]
         bot.answer_callback_query(callback_query_id=call.id,
                                   show_alert=True,
-                                  text="Вы кликнули " + ruBase + " и выбрали для обмена валюту " +
+                                  text="Вы кликнули " + ru_base + " и выбрали для обмена валюту " +
                                        base)
 
 
 
     if (call.data.startswith("['key'")):
-
-        print(f"call.data : {call.data} , type : {type(call.data)}")
+        # print(f"call.data : {call.data} , type : {type(call.data)}")
 
         quote = ast.literal_eval(call.data)[1]
-        ruQuote = ast.literal_eval(call.data)[2]
+        ru_quote = ast.literal_eval(call.data)[2]
         bot.answer_callback_query(callback_query_id=call.id,
                                   show_alert=True,
-                                  text="Вы кликнули " + ruQuote + " и решили обменять на валюту " +
+                                  text="Вы кликнули " + ru_quote + " и решили обменять на валюту " +
                                        quote)
 
 
@@ -86,7 +85,7 @@ def convert(message: telebot.types.Message):
         r = requests.get(f'https://api.coingate.com/v2/rates/merchant/{base}/{quote}')
         total_base = float(r.text) * amount
 
-        text = f'За  {amount} {ruBase} дают {total_base}  {ruQuote} '
+        text = f'За  {amount} {ru_base} дают {total_base}  {ru_quote} '
 
 
         bot.send_message(message.chat.id, text)
